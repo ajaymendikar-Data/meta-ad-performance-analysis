@@ -1,0 +1,33 @@
+SELECT 
+    COUNT(CASE WHEN event_type = 'Impression' THEN 1 END) AS impressions,
+    COUNT(CASE WHEN event_type = 'Click' THEN 1 END) AS clicks,
+    COUNT(CASE WHEN event_type = 'Share' THEN 1 END) AS shares,
+    COUNT(CASE WHEN event_type = 'Comment' THEN 1 END) AS comments,
+    COUNT(CASE WHEN event_type = 'Purchase' THEN 1 END) AS purchases,
+
+    -- Engagements ---
+    COUNT(CASE 
+        WHEN event_type IN ('Click','Share','Comment') THEN 1 
+    END) AS engagements,
+
+    -- CTR----
+    ROUND(
+        COUNT(CASE WHEN event_type = 'Click' THEN 1 END) * 100.0 /
+        NULLIF(COUNT(CASE WHEN event_type = 'Impression' THEN 1 END), 0), 
+    2) AS ctr,
+
+    -- Engagement Rate ----
+    ROUND(
+        COUNT(CASE 
+            WHEN event_type IN ('Click','Share','Comment') THEN 1 
+        END) * 100.0 /
+        NULLIF(COUNT(CASE WHEN event_type = 'Impression' THEN 1 END), 0), 
+    2) AS engagement_rate,
+
+    -- Conversion Rate ----
+    ROUND(
+        COUNT(CASE WHEN event_type = 'Purchase' THEN 1 END) * 100.0 /
+        NULLIF(COUNT(CASE WHEN event_type = 'Click' THEN 1 END), 0), 
+    2) AS conversion_rate
+
+FROM meta;
