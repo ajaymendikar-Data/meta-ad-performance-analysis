@@ -1,0 +1,14 @@
+-- Check for null values ---
+SELECT * 
+FROM ad_events
+WHERE event_type IS NULL;
+
+-- Check duplicate event_id ---
+SELECT event_id, COUNT(*)
+FROM ad_events
+GROUP BY event_id
+HAVING COUNT(*) > 1;
+
+-- Standardize event types ----
+UPDATE ad_events
+SET event_type = LOWER(TRIM(event_type));
